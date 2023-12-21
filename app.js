@@ -5,6 +5,7 @@ const { errors } = require('celebrate');
 const cors = require('cors');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const rateLimiter = require('./middlewares/rate-limiter');
 const validator = require('./middlewares/validator');
 const errorHandler = require('./middlewares/error-handler');
 const pageNotFoundHandler = require('./middlewares/page-not-found');
@@ -20,6 +21,7 @@ mongoose.connect(MONGO_URL, { family: 4 });
 
 app.use(cors());
 app.use(express.json());
+app.use(rateLimiter);
 app.use(requestLogger);
 app.post('/signup', validator.createUser, createUser);
 app.post('/signin', validator.login, login);

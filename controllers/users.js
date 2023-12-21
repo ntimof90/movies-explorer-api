@@ -6,7 +6,6 @@ const { JWT_SECRET, MONGODB_DUPLICATE_ERROR_CODE } = require('../config');
 
 const AuthError = require('../errors/auth-error');
 const DbDuplicateError = require('../errors/db-duplicate-error');
-const ValidationError = require('../errors/validation-error');
 const NotFoundError = require('../errors/not-found-error');
 
 module.exports.createUser = async (req, res, next) => {
@@ -19,7 +18,6 @@ module.exports.createUser = async (req, res, next) => {
   } catch (e) {
     let err = e;
     if (e.code === MONGODB_DUPLICATE_ERROR_CODE) err = new DbDuplicateError('Почта занята');
-    else if (e.name === 'ValidationError') err = new ValidationError('Переданы некорректные данные');
     return next(err);
   }
 };
