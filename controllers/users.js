@@ -14,7 +14,12 @@ module.exports.createUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ email, password: hash, name });
     user.password = undefined;
-    return res.send({ user });
+    const token = jwt.sign(
+      { _id: user._id },
+      JWT_SECRET,
+      { expiresIn: '7d' },
+    );
+    return res.send({ user, token });
   } catch (e) {
     let err = e;
     if (e.code === MONGODB_DUPLICATE_ERROR_CODE) err = new DbDuplicateError('Почта занята');
